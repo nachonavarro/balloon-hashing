@@ -129,11 +129,3 @@ def balloon_hash(password, salt):
     time_cost  = 20
     space_cost = 16
     return balloon(password, salt, space_cost, time_cost, delta=delta).encode('hex')
-
-
-
-
-
-
-
-
