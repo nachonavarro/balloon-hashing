@@ -25,3 +25,14 @@ def balloon(password, salt, space_cost, time_cost, delta=3):
     for s in range(1, space_cost):
         buf[s] = hash_func(cnt, buf[s - 1])
         cnt += 1
+
+    # 2. Mix
+    for t in range(time_cost):
+        for s in range(space_cost):
+            buf[s] = hash_func(cnt, buf[s - 1], buf[s])
+            cnt += 1
+            for i in range(delta):
+                other  = int(hash_func(cnt, salt, t, s, i).encode('hex'), 16) % space_cost
+                cnt   += 1
+                buf[s] = hash_func(cnt, buf[s], buf[other])
+                cnt   += 1
