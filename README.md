@@ -11,3 +11,12 @@ Balloon Hashing is a new hashing function that, according to the paper, is:
 	* **Resistant to Cache Attacks:** The idea is that an adversary who can observe the memory access patterns of the buffer in the algorithm (for example through cached side-channels) still can't figure out the password being cached.
 	* **Practical:** Is as good as the best hashing functions used in production today.
 
+## Algorithm
+The algorithm consists of three main parts, as explained in the paper. The first step is the expansion, in which the system fills 
+up a buffer with pseudorandom bytes derived from the password and salt by computing repeatedly the hash function on a combination 
+of the password and the previous hash. The second step is mixing, in which the system mixes time_cost number of times the pseudorandom
+bytes in the buffer. At each step in the for loop, it updates the nth block to be the hash of the n-1th block, the nth block, 
+and delta other blocks chosen at random from the buffer. The last step, the extraction, the system outputs as the hash the last 
+element in the buffer.
+
+
