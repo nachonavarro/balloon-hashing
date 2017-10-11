@@ -17,16 +17,12 @@ def hash_func(*args):
     t = ''.join([str(arg) for arg in args])
     return hash_functions[HASH_TYPE](t).digest()
 
-def balloon(password, salt, space_cost, time_cost, delta=3):
-    buf = [hash_func(0, password, salt)] + [None] * (space_cost - 1)
-    cnt = 1
-
-    # 1. Expand
+def expand(buf, cnt, space_cost):
     for s in range(1, space_cost):
         buf[s] = hash_func(cnt, buf[s - 1])
         cnt += 1
 
-    # 2. Mix
+def mix(buf, cnt, delta, salt, space_cost, time_cost):
     for t in range(time_cost):
         for s in range(space_cost):
             buf[s] = hash_func(cnt, buf[s - 1], buf[s])
@@ -37,8 +33,16 @@ def balloon(password, salt, space_cost, time_cost, delta=3):
                 buf[s] = hash_func(cnt, buf[s], buf[other])
                 cnt   += 1
 
-    # 3. Extract
+def extract(buf):
     return buf[-1]
+
+def balloon(password, salt, space_cost, time_cost, delta=3):
+    buf = [hash_func(0, password, salt)] + [None] * (space_cost - 1)
+    cnt = 1
+
+    expand(buf, cnt, space_cost)
+    mix(buf, cnt, delta, salt, space_cost, time_cost)
+    return extract(buf)
 
 def balloon_hash(password, salt):
     delta      = 4
