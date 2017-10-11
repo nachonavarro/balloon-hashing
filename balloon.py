@@ -19,7 +19,7 @@ def hash_func(*args):
 
 def expand(buf, cnt, space_cost):
     for s in range(1, space_cost):
-        buf[s] = hash_func(cnt, buf[s - 1])
+        buf.append(hash_func(cnt, buf[s - 1]))
         cnt += 1
 
 def mix(buf, cnt, delta, salt, space_cost, time_cost):
@@ -37,7 +37,7 @@ def extract(buf):
     return buf[-1]
 
 def balloon(password, salt, space_cost, time_cost, delta=3):
-    buf = [hash_func(0, password, salt)] + [None] * (space_cost - 1)
+    buf = [hash_func(0, password, salt)]
     cnt = 1
 
     expand(buf, cnt, space_cost)
