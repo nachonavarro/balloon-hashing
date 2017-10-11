@@ -39,3 +39,9 @@ def balloon(password, salt, space_cost, time_cost, delta=3):
 
     # 3. Extract
     return buf[-1]
+
+def balloon_hash(password, salt):
+    delta      = 4
+    time_cost  = 20
+    space_cost = 16
+    return balloon(password, salt, space_cost, time_cost, delta=delta).encode('hex')
