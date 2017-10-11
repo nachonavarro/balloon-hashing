@@ -18,3 +18,10 @@ def hash_func(*args):
     return hash_functions[HASH_TYPE](t).digest()
 
 def balloon(password, salt, space_cost, time_cost, delta=3):
+    buf = [hash_func(0, password, salt)] + [None] * (space_cost - 1)
+    cnt = 1
+
+    # 1. Expand
+    for s in range(1, space_cost):
+        buf[s] = hash_func(cnt, buf[s - 1])
+        cnt += 1
