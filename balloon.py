@@ -16,3 +16,5 @@ HASH_TYPE = 'sha256'
 def hash_func(*args):
     t = ''.join([str(arg) for arg in args])
     return hash_functions[HASH_TYPE](t).digest()
+
+def balloon(password, salt, space_cost, time_cost, delta=3):
