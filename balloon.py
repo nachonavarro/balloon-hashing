@@ -10,3 +10,6 @@ hash_functions = {
     'sha384': hashlib.sha384,
     'sha512': hashlib.sha512
 }
+
+HASH_TYPE = 'sha256'
+
