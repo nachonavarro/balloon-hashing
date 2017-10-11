@@ -1,6 +1,4 @@
 import hashlib
-import random
-import string
 
 hash_functions = {
     'md5': hashlib.md5,
