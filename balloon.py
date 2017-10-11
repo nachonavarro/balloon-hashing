@@ -36,3 +36,6 @@ def balloon(password, salt, space_cost, time_cost, delta=3):
                 cnt   += 1
                 buf[s] = hash_func(cnt, buf[s], buf[other])
                 cnt   += 1
+
+    # 3. Extract
+    return buf[-1]
