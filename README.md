@@ -26,12 +26,10 @@ An example will suffice to show how it works:
 
 ```python
 import balloon as b
-import random
-import string
 password = "buildmeupbuttercup"
-salt = ''.join(random.choice(string.letters) for _ in range(16))
+salt = 'JqMcHqUcjinFhQKJ'
 print b.balloon_hash(password, salt)
-# prints c2c0ff076cec9aaf1663df7e79a10e3e28d14b96aa3287f685fff4c6ba0fbda9
+# prints 9bed6b754c7a412b23c0d1ab02ca2c219d8142d505ced917a1801bc6171a9795
 
 # A slightly more advanced usage
 delta = 5
@@ -39,6 +37,6 @@ time_cost = 18
 space_cost = 24
 bts = b.balloon(password, salt, space_cost, time_cost, delta=delta)
 print bts.encode('hex')
-# prints ff6a53cebafbc600275f3ba7ea32694ce0a98dcb3f2602b25cce138476066c56
+# prints 0c0c124bef8f70a9051dd29e0bd524479e488cfe1212c648d5ae33df728753ca
 
 ```
