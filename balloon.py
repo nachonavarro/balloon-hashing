@@ -12,10 +12,36 @@ hash_functions = {
 HASH_TYPE = 'sha256'
 
 def hash_func(*args):
+    """Concatenate all the arguments and hash the result.
+       Note that the hash function used can be modified
+       in the global parameter HASH_TYPE.
+
+    Args:
+        *args: Arguments to concatenate
+
+    Returns:
+        str: The hashed string
+
+    """
     t = ''.join([str(arg) for arg in args])
     return hash_functions[HASH_TYPE](t).digest()
 
 def expand(buf, cnt, space_cost):
+    """First step of the algorithm. Fill up a buffer with
+       pseudorandom bytes derived from the password and salt
+       by computing repeatedly the hash function on a combination
+       of the password and the previous hash.
+
+    Args:
+        buf (list str): A list of hashes as bytes.
+        cnt (int): Used in a security proof (read the paper)
+        space_cost (int): The size of the buffer
+
+    Returns:
+        void: Updates the buffer and counter, but does not
+        return anything.
+
+    """
     for s in range(1, space_cost):
         buf.append(hash_func(cnt, buf[s - 1]))
         cnt += 1
