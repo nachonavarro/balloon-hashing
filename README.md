@@ -3,6 +3,10 @@
 An implementation in Python of Balloon Hashing. All credit to Dan Boneh, Henry Corrigan-Gibbs, and Stuart Schechter. For more information see
 the [research paper](https://eprint.iacr.org/2016/027.pdf) or their [website](https://crypto.stanford.edu/balloon/) for this project. All errors in the code are, of course, mine. Feel free to fix any mistakes.
 
+## Developer
+
+Works on Python 3.
+
 ## Background
 
 Balloon Hashing is a new hashing function that, according to the paper, is:
@@ -25,18 +29,17 @@ element in the buffer.
 An example will suffice to show how it works:
 
 ```python
-import balloon as b
-password = "buildmeupbuttercup"
-salt = 'JqMcHqUcjinFhQKJ'
-print b.balloon_hash(password, salt)
-# prints 9bed6b754c7a412b23c0d1ab02ca2c219d8142d505ced917a1801bc6171a9795
+>>> import balloon as b
+>>> password = "buildmeupbuttercup"
+>>> salt = 'JqMcHqUcjinFhQKJ'
+>>> print(b.balloon_hash(password, salt))
+99c11d1d483d631783f46c235b81fac88e7d106ff304a5b1e6c7d55450e01583
 
 # A slightly more advanced usage
-delta = 5
-time_cost = 18
-space_cost = 24
-bts = b.balloon(password, salt, space_cost, time_cost, delta=delta)
-print bts.encode('hex')
-# prints 0c0c124bef8f70a9051dd29e0bd524479e488cfe1212c648d5ae33df728753ca
-
+>>> delta = 5
+>>> time_cost = 18
+>>> space_cost = 24
+>>> bs = b.balloon(password, salt, space_cost, time_cost, delta=delta)
+>>> print(bs.hex())
+bf4d8bcd792a22ece165d996a2f1ee3af5ba92a19e79a335d191cd0840f178a6
 ```

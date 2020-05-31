@@ -11,7 +11,8 @@ hash_functions = {
 
 HASH_TYPE = 'sha256'
 
-def hash_func(*args):
+
+def hash_func(*args) -> bytes:
     """Concatenate all the arguments and hash the result.
        Note that the hash function used can be modified
        in the global parameter HASH_TYPE.
@@ -23,10 +24,11 @@ def hash_func(*args):
         str: The hashed string
 
     """
-    t = ''.join([str(arg) for arg in args])
+    t = b''.join(str(arg).encode('utf-8') for arg in args)
     return hash_functions[HASH_TYPE](t).digest()
 
-def expand(buf, cnt, space_cost):
+
+def expand(buf, cnt, space_cost) -> int:
     """First step of the algorithm. Fill up a buffer with
        pseudorandom bytes derived from the password and salt
        by computing repeatedly the hash function on a combination
@@ -45,6 +47,8 @@ def expand(buf, cnt, space_cost):
     for s in range(1, space_cost):
         buf.append(hash_func(cnt, buf[s - 1]))
         cnt += 1
+    return cnt
+
 
 def mix(buf, cnt, delta, salt, space_cost, time_cost):
     """Second step of the algorithm. Mix time_cost number
@@ -71,12 +75,13 @@ def mix(buf, cnt, delta, salt, space_cost, time_cost):
             buf[s] = hash_func(cnt, buf[s - 1], buf[s])
             cnt += 1
             for i in range(delta):
-                other  = int(hash_func(cnt, salt, t, s, i).encode('hex'), 16) % space_cost
-                cnt   += 1
+                other = int(hash_func(cnt, salt, t, s, i).hex(), 16) % space_cost
+                cnt += 1
                 buf[s] = hash_func(cnt, buf[s], buf[other])
-                cnt   += 1
+                cnt += 1
 
-def extract(buf):
+
+def extract(buf) -> bytes:
     """Final step. Return the last value in the buffer.
 
     Args:
@@ -88,7 +93,8 @@ def extract(buf):
     """
     return buf[-1]
 
-def balloon(password, salt, space_cost, time_cost, delta=3):
+
+def balloon(password, salt, space_cost, time_cost, delta=3) -> bytes:
     """Main function that collects all the substeps. As
        previously mentioned, first expand, then mix, and 
        finally extract. Note the result is returned as bytes,
@@ -109,9 +115,10 @@ def balloon(password, salt, space_cost, time_cost, delta=3):
     buf = [hash_func(0, password, salt)]
     cnt = 1
 
-    expand(buf, cnt, space_cost)
+    cnt = expand(buf, cnt, space_cost)
     mix(buf, cnt, delta, salt, space_cost, time_cost)
     return extract(buf)
+
 
 def balloon_hash(password, salt):
     """A more friendly client function that just takes
@@ -125,7 +132,7 @@ def balloon_hash(password, salt):
         str: The hash as hex.
 
     """
-    delta      = 4
-    time_cost  = 20
+    delta = 4
+    time_cost = 20
     space_cost = 16
-    return balloon(password, salt, space_cost, time_cost, delta=delta).encode('hex')
+    return balloon(password, salt, space_cost, time_cost, delta=delta).hex()
