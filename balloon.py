@@ -24,7 +24,16 @@ def hash_func(*args) -> bytes:
         str: The hashed string
 
     """
-    t = b''.join(str(arg).encode('utf-8') for arg in args)
+    t = b''
+
+    for arg in args:
+        if type(arg) is int:
+            t += arg.to_bytes(8, "little")
+        elif type(arg) is str:
+            t += arg.encode('utf-8')
+        else:
+            t += arg
+
     return hash_functions[HASH_TYPE](t).digest()
 
 
@@ -75,7 +84,8 @@ def mix(buf, cnt, delta, salt, space_cost, time_cost):
             buf[s] = hash_func(cnt, buf[s - 1], buf[s])
             cnt += 1
             for i in range(delta):
-                other = int(hash_func(cnt, salt, t, s, i).hex(), 16) % space_cost
+                idx_block = hash_func(t, s, i)
+                other = int.from_bytes(hash_func(cnt, salt, idx_block), "little") % space_cost
                 cnt += 1
                 buf[s] = hash_func(cnt, buf[s], buf[other])
                 cnt += 1
