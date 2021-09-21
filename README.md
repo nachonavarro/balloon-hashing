@@ -33,7 +33,7 @@ An example will suffice to show how it works:
 >>> password = "buildmeupbuttercup"
 >>> salt = 'JqMcHqUcjinFhQKJ'
 >>> print(b.balloon_hash(password, salt))
-99c11d1d483d631783f46c235b81fac88e7d106ff304a5b1e6c7d55450e01583
+2ec8d833db5f88e584ab793950ecfb21657a3816edea8d9e73ea23c13ba2b740
 
 # A slightly more advanced usage
 >>> delta = 5
@@ -41,5 +41,5 @@ An example will suffice to show how it works:
 >>> space_cost = 24
 >>> bs = b.balloon(password, salt, space_cost, time_cost, delta=delta)
 >>> print(bs.hex())
-bf4d8bcd792a22ece165d996a2f1ee3af5ba92a19e79a335d191cd0840f178a6
+69f86890cef40a7ec5f70daff1ce8e2cde233a15bffa785e7efdb5143af51bfb
 ```
