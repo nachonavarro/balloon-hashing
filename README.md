@@ -7,6 +7,8 @@ the [research paper](https://eprint.iacr.org/2016/027.pdf) or their [website](ht
 
 Works on Python 3.
 
+Check test vectors with `python -m unittest`.
+
 ## Background
 
 Balloon Hashing is a new hashing function that, according to the paper, is:
