@@ -1,3 +1,4 @@
+import concurrent.futures
 import hashlib
 
 hash_functions = {
@@ -146,3 +147,58 @@ def balloon_hash(password, salt):
     time_cost = 20
     space_cost = 16
     return balloon(password, salt, space_cost, time_cost, delta=delta).hex()
+
+def balloon_m(password, salt, space_cost, time_cost, parallel_cost, delta=3) -> bytes:
+    """M-core variant of the Balloon hashing algorithm. Note the result
+       is returned as bytes, for a more friendly function with default
+       values and returning a hex string see the function balloon_m_hash
+
+    Args:
+        password (str): The main string to hash
+        salt (str): A user defined random value for security
+        space_cost (int): The size of the buffer
+        time_cost (int): Number of rounds to mix
+        parallel_cost (int): Number of concurrent instances
+        delta (int): Number of random blocks to mix with.
+
+    Returns:
+        str: A series of bytes, the hash.
+
+    """
+    output = b''
+
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        futures = []
+
+        for p in range(parallel_cost):
+            parallel_salt = b'' + salt.encode('utf-8') + (p + 1).to_bytes(8, "little")
+            futures.append(executor.submit(balloon, password, parallel_salt, space_cost, time_cost, delta=delta))
+        for future in concurrent.futures.as_completed(futures):
+            result = future.result()
+
+            if len(output) == 0:
+                output = result
+            else:
+                output = bytes([_a ^ _b for _a, _b in zip(output, result)])
+
+    return hash_func(password, salt, output)
+
+
+def balloon_m_hash(password, salt):
+    """A more friendly client function that just takes
+       a password and a salt and computes outputs the hash in hex.
+       This uses the M-core variant of the Balloon hashing algorithm.
+
+    Args:
+        password (str): The main string to hash
+        salt (str): A user defined random value for security
+
+    Returns:
+        str: The hash as hex.
+
+    """
+    delta = 4
+    time_cost = 20
+    space_cost = 16
+    parallel_cost = 4
+    return balloon_m(password, salt, space_cost, time_cost, parallel_cost, delta=delta).hex()
