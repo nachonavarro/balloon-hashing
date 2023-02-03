@@ -1,5 +1,7 @@
-from balloon import balloon,balloon_m
 import unittest
+
+from balloon import balloon, balloon_hash, balloon_m, balloon_m_hash
+
 
 class TestBalloon(unittest.TestCase):
 
@@ -44,8 +46,43 @@ class TestBalloon(unittest.TestCase):
 
         for test_vector in test_vectors:
             self.assertEqual(balloon(test_vector["password"], test_vector["salt"], test_vector["s_cost"], test_vector["t_cost"]).hex(), test_vector["output"])
+        
 
-class TestBalloon(unittest.TestCase):
+class TestBalloonHash(unittest.TestCase):
+
+    def test_vectors(self):
+        test_vectors = [
+            {
+                "password": "hunter42",
+                "salt": "examplesalt",
+                "output": "345d33a7525fe7d9333755558935bb8e1d40c12c2d54a76570216dacf9cefab7",
+            },
+            {
+                "password": "",
+                "salt": "salt",
+                "output": "02a172a57253cb9bd6cd411e4692b2f45f6a2e78b045181fbb89b45e58fffc9f",
+            },
+            {
+                "password": "password",
+                "salt": "",
+                "output": "07c1a77859de05af68908a058edca4f6a2714d267359c30c2e13997c3c444d4e",
+            },
+            {
+                "password": "\0",
+                "salt": "\0",
+                "output": "082a125a9e022cf6d4e59a39a8f6b8a4951e752cf9b517cd237ac68fc8921806",
+            },
+            {
+                "password": "password",
+                "salt": "salt",
+                "output": "0991cbcc01078e50e8e8fbdf8aba03f6bc326f26cd0dd8dfbc269544688ddf7d",
+            },
+        ]
+
+        for test_vector in test_vectors:
+            self.assertEqual(balloon_hash(test_vector["password"], test_vector["salt"]), test_vector["output"])
+
+class TestBalloonM(unittest.TestCase):
 
     def test_vectors(self):
         test_vectors = [
@@ -117,6 +154,40 @@ class TestBalloon(unittest.TestCase):
 
         for test_vector in test_vectors:
             self.assertEqual(balloon_m(test_vector["password"], test_vector["salt"], test_vector["s_cost"], test_vector["t_cost"], test_vector["p_cost"]).hex(), test_vector["output"])
+
+class TestBalloonMHash(unittest.TestCase):
+
+    def test_vectors(self):
+        test_vectors = [
+            {
+                "password": "hunter42",
+                "salt": "examplesalt",
+                "output": "07223b99c38300c3eed167512cce91b00f1dde7a1eb37a5d250ce63477741508",
+            },
+            {
+                "password": "",
+                "salt": "salt",
+                "output": "05b9ea72b0c80f6b6dd3c191fd06aa0b290fa5ce724c8cf5284835724ad09283",
+            },
+            {
+                "password": "password",
+                "salt": "",
+                "output": "bf90306b24d7c90dcbc16e9fb21570bbfdf3df2c9465b5a33e2ee2a9b57c0a0a",
+            },
+            {
+                "password": "\0",
+                "salt": "\0",
+                "output": "eef924e768ac2e03c84a76fd37aaa71372f575bbb53674e49f8ce4864e987fe2",
+            },
+            {
+                "password": "password",
+                "salt": "salt",
+                "output": "57b737dc8e95e6fb44141a7db9fb34abea63efd8ee8890205bd37be9ebf73271",
+            },
+        ]
+
+        for test_vector in test_vectors:
+            self.assertEqual(balloon_m_hash(test_vector["password"], test_vector["salt"]), test_vector["output"])
 
 if __name__ == '__main__':
     unittest.main()
