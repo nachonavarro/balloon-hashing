@@ -1,7 +1,5 @@
-import unittest
-
 from balloon import balloon, balloon_hash, balloon_m, balloon_m_hash
-
+import unittest
 
 class TestBalloon(unittest.TestCase):
 
@@ -134,5 +132,6 @@ class TestBalloonM(unittest.TestCase):
         for test_vector in test_vectors:
             self.assertEqual(balloon_m(test_vector["password"], test_vector["salt"], test_vector["s_cost"], test_vector["t_cost"], test_vector["p_cost"]).hex(), test_vector["output"])
             self.assertEqual(balloon_m_hash(test_vector["password"], test_vector["salt"]), test_vector["default_output"])
+
 if __name__ == '__main__':
     unittest.main()
