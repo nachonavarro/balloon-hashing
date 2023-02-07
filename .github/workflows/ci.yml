@@ -13,7 +13,7 @@ jobs:
       - name: Format Markdown with markdownlint
         run: |
           npm install -g markdownlint-cli
-          markdownlint --fix .
+          markdownlint --disable MD013 --fix .
       
       - name: Format Python with black
         run: |
