@@ -10,5 +10,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Format Markdown with markdownlint
+        run: |
+          npm install -g markdownlint-cli
+          markdownlint --fix .
+      
+      - name: Format Python with black
+        run: |
+          python -m pip install --upgrade pip
+          pip install black
+          black .
+
       - name: Run tests
         run: python -m unittest test_vectors.py
+
+      - name: Commit changes if any
+        run: |
+            git config --local user.email "action@github.com"
+            git config --local user.name "GitHub Action"
+            git add -A
+            git diff --name-only --cached --exit-code || ( git commit -am "Format" && git push )
