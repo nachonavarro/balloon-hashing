@@ -1,5 +1,7 @@
 # Balloon Hashing
 
+[![GitHub license](https://img.shields.io/badge/LICENSE-MIT-GREEN)](LICENSE)
+
 An implementation in Python of Balloon Hashing. All credit to Dan Boneh, Henry Corrigan-Gibbs, and Stuart Schechter. For more information see
 the [research paper](https://eprint.iacr.org/2016/027.pdf) or their [website](https://crypto.stanford.edu/balloon/) for this project. All errors in the code are, of course, mine. Feel free to fix any mistakes.
 
