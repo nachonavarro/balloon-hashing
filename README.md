@@ -25,7 +25,6 @@ bytes in the buffer. At each step in the for loop, it updates the nth block to b
 and delta other blocks chosen at random from the buffer. In the last step, the extraction, the system outputs as the hash the last 
 element in the buffer.
 
-
 ## Usage
 
 An example will suffice to show how it works:
@@ -44,4 +43,11 @@ An example will suffice to show how it works:
 >>> bs = b.balloon(password, salt, space_cost, time_cost, delta=delta)
 >>> print(bs.hex())
 69f86890cef40a7ec5f70daff1ce8e2cde233a15bffa785e7efdb5143af51bfb
+```
+
+## Formatting
+
+```bash
+pip install black
+black .
 ```
