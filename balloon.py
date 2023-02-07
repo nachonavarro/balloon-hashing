@@ -2,15 +2,15 @@ import concurrent.futures
 import hashlib
 
 hash_functions = {
-    'md5': hashlib.md5,
-    'sha1': hashlib.sha1,
-    'sha224': hashlib.sha224,
-    'sha256': hashlib.sha256,
-    'sha384': hashlib.sha384,
-    'sha512': hashlib.sha512
+    "md5": hashlib.md5,
+    "sha1": hashlib.sha1,
+    "sha224": hashlib.sha224,
+    "sha256": hashlib.sha256,
+    "sha384": hashlib.sha384,
+    "sha512": hashlib.sha512,
 }
 
-HASH_TYPE = 'sha256'
+HASH_TYPE = "sha256"
 
 
 def hash_func(*args) -> bytes:
@@ -25,13 +25,13 @@ def hash_func(*args) -> bytes:
         str: The hashed string
 
     """
-    t = b''
+    t = b""
 
     for arg in args:
         if type(arg) is int:
             t += arg.to_bytes(8, "little")
         elif type(arg) is str:
-            t += arg.encode('utf-8')
+            t += arg.encode("utf-8")
         else:
             t += arg
 
@@ -86,7 +86,10 @@ def mix(buf, cnt, delta, salt, space_cost, time_cost):
             cnt += 1
             for i in range(delta):
                 idx_block = hash_func(t, s, i)
-                other = int.from_bytes(hash_func(cnt, salt, idx_block), "little") % space_cost
+                other = (
+                    int.from_bytes(hash_func(cnt, salt, idx_block), "little")
+                    % space_cost
+                )
                 cnt += 1
                 buf[s] = hash_func(cnt, buf[s], buf[other])
                 cnt += 1
@@ -107,7 +110,7 @@ def extract(buf) -> bytes:
 
 def balloon(password, salt, space_cost, time_cost, delta=3) -> bytes:
     """Main function that collects all the substeps. As
-       previously mentioned, first expand, then mix, and 
+       previously mentioned, first expand, then mix, and
        finally extract. Note the result is returned as bytes,
        for a more friendly function with default values
        and returning a hex string see the function balloon_hash
@@ -148,6 +151,7 @@ def balloon_hash(password, salt):
     space_cost = 16
     return balloon(password, salt, space_cost, time_cost, delta=delta).hex()
 
+
 def balloon_m(password, salt, space_cost, time_cost, parallel_cost, delta=3) -> bytes:
     """M-core variant of the Balloon hashing algorithm. Note the result
        is returned as bytes, for a more friendly function with default
@@ -165,14 +169,18 @@ def balloon_m(password, salt, space_cost, time_cost, parallel_cost, delta=3) -> 
         str: A series of bytes, the hash.
 
     """
-    output = b''
+    output = b""
 
     with concurrent.futures.ThreadPoolExecutor() as executor:
         futures = []
 
         for p in range(parallel_cost):
-            parallel_salt = b'' + salt.encode('utf-8') + (p + 1).to_bytes(8, "little")
-            futures.append(executor.submit(balloon, password, parallel_salt, space_cost, time_cost, delta=delta))
+            parallel_salt = b"" + salt.encode("utf-8") + (p + 1).to_bytes(8, "little")
+            futures.append(
+                executor.submit(
+                    balloon, password, parallel_salt, space_cost, time_cost, delta=delta
+                )
+            )
         for future in concurrent.futures.as_completed(futures):
             result = future.result()
 
@@ -201,4 +209,6 @@ def balloon_m_hash(password, salt):
     time_cost = 20
     space_cost = 16
     parallel_cost = 4
-    return balloon_m(password, salt, space_cost, time_cost, parallel_cost, delta=delta).hex()
+    return balloon_m(
+        password, salt, space_cost, time_cost, parallel_cost, delta=delta
+    ).hex()
