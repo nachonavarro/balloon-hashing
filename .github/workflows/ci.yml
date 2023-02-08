@@ -12,3 +12,30 @@ jobs:
 
       - name: Run tests
         run: python -m unittest test_vectors.py
+
+  format-markdown:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Format Markdown with markdownlint
+        run: |
+          npm install -g markdownlint-cli
+          markdownlint --disable MD013 --fix .
+          git add -A
+          git diff --cached --exit-code
+
+  format-python:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - name: Format Python with black
+        run: |
+          python -m pip install --upgrade pip
+          pip install black
+          black . --check
