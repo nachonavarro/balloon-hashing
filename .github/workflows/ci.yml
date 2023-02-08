@@ -25,7 +25,7 @@ jobs:
           npm install -g markdownlint-cli
           markdownlint --disable MD013 --fix .
           git add -A
-          git diff --name-only --cached --exit-code
+          git diff --cached --exit-code
 
   format-python:
     runs-on: ubuntu-latest
