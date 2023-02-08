@@ -23,10 +23,3 @@ jobs:
 
       - name: Run tests
         run: python -m unittest test_vectors.py
-
-      - name: Commit changes if any
-        run: |
-            git config --local user.email "action@github.com"
-            git config --local user.name "GitHub Action"
-            git add -A
-            git diff --name-only --cached --exit-code || ( git commit -am "Format" && git push )
