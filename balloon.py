@@ -16,7 +16,7 @@ HASH_TYPE = "sha256"
 def hash_func(*args) -> bytes:
     """Concatenate all the arguments and hash the result.
        Note that the hash function used can be modified
-       in the global parameter HASH_TYPE.
+       in the global parameter `HASH_TYPE`.
 
     Args:
         *args: Arguments to concatenate
