@@ -57,7 +57,9 @@ def expand(buf: list[bytes], cnt: int, space_cost: int) -> int:
     return cnt
 
 
-def mix(buf: list[bytes], cnt: int, delta: int, salt: str, space_cost: int, time_cost: int) -> None:
+def mix(
+    buf: list[bytes], cnt: int, delta: int, salt: str, space_cost: int, time_cost: int
+) -> None:
     """Second step of the algorithm. Mix `time_cost` number
        of times the pseudorandom bytes in the buffer. At each
        step in the for loop, update the nth block to be
@@ -103,7 +105,9 @@ def extract(buf: list[bytes]) -> bytes:
     return buf[-1]
 
 
-def balloon(password: str, salt: str, space_cost: int, time_cost: int, delta: int = 3) -> bytes:
+def balloon(
+    password: str, salt: str, space_cost: int, time_cost: int, delta: int = 3
+) -> bytes:
     """Main function that collects all the substeps. As
        previously mentioned, first expand, then mix, and
        finally extract. Note the result is returned as bytes,
@@ -145,7 +149,14 @@ def balloon_hash(password: str, salt: str) -> str:
     return balloon(password, salt, space_cost, time_cost, delta=delta).hex()
 
 
-def balloon_m(password: str, salt: str, space_cost: int, time_cost: int, parallel_cost: int, delta: int = 3) -> bytes:
+def balloon_m(
+    password: str,
+    salt: str,
+    space_cost: int,
+    time_cost: int,
+    parallel_cost: int,
+    delta: int = 3,
+) -> bytes:
     """M-core variant of the Balloon hashing algorithm. Note the result
        is returned as bytes, for a more friendly function with default
        values that returns a hex string, see the function balloon_m_hash.
@@ -170,7 +181,7 @@ def balloon_m(password: str, salt: str, space_cost: int, time_cost: int, paralle
             parallel_salt = b"" + salt.encode("utf-8") + (p + 1).to_bytes(8, "little")
             futures.append(
                 executor.submit(
-                    balloon, password, parallel_salt, space_cost, time_cost, delta=delta # type: ignore
+                    balloon, password, parallel_salt, space_cost, time_cost, delta=delta  # type: ignore
                 )
             )
         for future in concurrent.futures.as_completed(futures):
