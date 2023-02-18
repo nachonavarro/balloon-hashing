@@ -184,9 +184,9 @@ def balloon_m(password: str, salt: str, space_cost: int, time_cost: int, paralle
     return hash_func(password, salt, output)
 
 
-def balloon_m_hash(password, salt):
+def balloon_m_hash(password: str, salt: str) -> str:
     """A more friendly client function that just takes
-       a password and a salt and computes outputs the hash in hex.
+       a password and a salt and outputs the hash as a hex string.
        This uses the M-core variant of the Balloon hashing algorithm.
 
     Args:
@@ -195,7 +195,6 @@ def balloon_m_hash(password, salt):
 
     Returns:
         str: The hash as hex.
-
     """
     delta = 4
     time_cost = 20
