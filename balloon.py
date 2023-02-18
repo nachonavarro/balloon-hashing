@@ -37,21 +37,19 @@ def hash_func(*args) -> bytes:
     return hash_functions[HASH_TYPE](t).digest()
 
 
-def expand(buf, cnt, space_cost) -> int:
+def expand(buf: list[bytes], cnt: int, space_cost: int) -> int:
     """First step of the algorithm. Fill up a buffer with
        pseudorandom bytes derived from the password and salt
        by computing repeatedly the hash function on a combination
        of the password and the previous hash.
 
     Args:
-        buf (list str): A list of hashes as bytes.
+        buf (list[bytes]): A list of hashes as bytes.
         cnt (int): Used in a security proof (read the paper)
         space_cost (int): The size of the buffer
 
     Returns:
-        void: Updates the buffer and counter, but does not
-        return anything.
-
+        int: Counter used in a security proof (read the paper)
     """
     for s in range(1, space_cost):
         buf.append(hash_func(cnt, buf[s - 1]))
