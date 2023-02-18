@@ -57,15 +57,15 @@ def expand(buf: list[bytes], cnt: int, space_cost: int) -> int:
     return cnt
 
 
-def mix(buf, cnt, delta, salt, space_cost, time_cost):
-    """Second step of the algorithm. Mix time_cost number
+def mix(buf: list[bytes], cnt: int, delta: int, salt: str, space_cost: int, time_cost: int) -> None:
+    """Second step of the algorithm. Mix `time_cost` number
        of times the pseudorandom bytes in the buffer. At each
        step in the for loop, update the nth block to be
-       the hash of the n-1th block, the nth block, and delta
-       other blocks chosen at random from the buffer.
+       the hash of the n-1th block, the nth block, and `delta`
+       other blocks chosen at random from the buffer `buf`.
 
     Args:
-        buf (list str): A list of hashes as bytes.
+        buf (list[bytes]): A list of hashes as bytes.
         cnt (int): Used in a security proof (read the paper)
         delta (int): Number of random blocks to mix with.
         salt (str): A user defined random value for security
@@ -75,7 +75,6 @@ def mix(buf, cnt, delta, salt, space_cost, time_cost):
     Returns:
         void: Updates the buffer and counter, but does not
         return anything.
-
     """
     for t in range(time_cost):
         for s in range(space_cost):
