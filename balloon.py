@@ -91,15 +91,14 @@ def mix(buf: list[bytes], cnt: int, delta: int, salt: str, space_cost: int, time
                 cnt += 1
 
 
-def extract(buf) -> bytes:
+def extract(buf: list[bytes]) -> bytes:
     """Final step. Return the last value in the buffer.
 
     Args:
-        buf (list str): A list of hashes as bytes.
+        buf (list[bytes]): A list of hashes as bytes.
 
     Returns:
-        str: Last value of the buffer as bytes
-
+        bytes: Last value of the buffer as bytes
     """
     return buf[-1]
 
