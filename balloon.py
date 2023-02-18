@@ -103,23 +103,22 @@ def extract(buf: list[bytes]) -> bytes:
     return buf[-1]
 
 
-def balloon(password, salt, space_cost, time_cost, delta=3) -> bytes:
+def balloon(password: str, salt: str, space_cost: int, time_cost: int, delta: int = 3) -> bytes:
     """Main function that collects all the substeps. As
        previously mentioned, first expand, then mix, and
        finally extract. Note the result is returned as bytes,
        for a more friendly function with default values
-       and returning a hex string see the function balloon_hash
+       that returns a hex string, see the function balloon_hash.
 
     Args:
         password (str): The main string to hash
         salt (str): A user defined random value for security
         space_cost (int): The size of the buffer
         time_cost (int): Number of rounds to mix
-        delta (int): Number of random blocks to mix with.
+        delta (int, optional): Number of random blocks to mix with. Defaults to 3.
 
     Returns:
-        str: A series of bytes, the hash.
-
+        bytes: A series of bytes, the hash.
     """
     buf = [hash_func(0, password, salt)]
     cnt = 1
