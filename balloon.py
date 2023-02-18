@@ -19,10 +19,10 @@ def hash_func(*args) -> bytes:
        in the global parameter `HASH_TYPE`.
 
     Args:
-        *args: Arguments to concatenate
+        *args: Arguments to concatenate.
 
     Returns:
-        bytes: The hashed string
+        bytes: The hashed string.
     """
     t = b""
 
@@ -45,11 +45,11 @@ def expand(buf: list[bytes], cnt: int, space_cost: int) -> int:
 
     Args:
         buf (list[bytes]): A list of hashes as bytes.
-        cnt (int): Used in a security proof (read the paper)
-        space_cost (int): The size of the buffer
+        cnt (int): Used in a security proof (read the paper).
+        space_cost (int): The size of the buffer.
 
     Returns:
-        int: Counter used in a security proof (read the paper)
+        int: Counter used in a security proof (read the paper).
     """
     for s in range(1, space_cost):
         buf.append(hash_func(cnt, buf[s - 1]))
@@ -66,11 +66,11 @@ def mix(buf: list[bytes], cnt: int, delta: int, salt: str, space_cost: int, time
 
     Args:
         buf (list[bytes]): A list of hashes as bytes.
-        cnt (int): Used in a security proof (read the paper)
+        cnt (int): Used in a security proof (read the paper).
         delta (int): Number of random blocks to mix with.
-        salt (str): A user defined random value for security
-        space_cost (int): The size of the buffer
-        time_cost (int): Number of rounds to mix
+        salt (str): A user defined random value for security.
+        space_cost (int): The size of the buffer.
+        time_cost (int): Number of rounds to mix.
 
     Returns:
         void: Updates the buffer and counter, but does not
@@ -98,7 +98,7 @@ def extract(buf: list[bytes]) -> bytes:
         buf (list[bytes]): A list of hashes as bytes.
 
     Returns:
-        bytes: Last value of the buffer as bytes
+        bytes: Last value of the buffer as bytes.
     """
     return buf[-1]
 
@@ -111,10 +111,10 @@ def balloon(password: str, salt: str, space_cost: int, time_cost: int, delta: in
        that returns a hex string, see the function balloon_hash.
 
     Args:
-        password (str): The main string to hash
-        salt (str): A user defined random value for security
-        space_cost (int): The size of the buffer
-        time_cost (int): Number of rounds to mix
+        password (str): The main string to hash.
+        salt (str): A user defined random value for security.
+        space_cost (int): The size of the buffer.
+        time_cost (int): Number of rounds to mix.
         delta (int, optional): Number of random blocks to mix with. Defaults to 3.
 
     Returns:
@@ -133,8 +133,8 @@ def balloon_hash(password: str, salt: str) -> str:
        a password and a salt and outputs the hash as a hex string.
 
     Args:
-        password (str): The main string to hash
-        salt (str): A user defined random value for security
+        password (str): The main string to hash.
+        salt (str): A user defined random value for security.
 
     Returns:
         str: The hash as hex.
@@ -151,11 +151,11 @@ def balloon_m(password: str, salt: str, space_cost: int, time_cost: int, paralle
        values that returns a hex string, see the function balloon_m_hash.
 
     Args:
-        password (str): The main string to hash
-        salt (str): A user defined random value for security
-        space_cost (int): The size of the buffer
-        time_cost (int): Number of rounds to mix
-        parallel_cost (int): Number of concurrent instances
+        password (str): The main string to hash.
+        salt (str): A user defined random value for security.
+        space_cost (int): The size of the buffer.
+        time_cost (int): Number of rounds to mix.
+        parallel_cost (int): Number of concurrent instances.
         delta (int, optional): Number of random blocks to mix with. Defaults to 3.
 
     Returns:
@@ -190,8 +190,8 @@ def balloon_m_hash(password: str, salt: str) -> str:
        This uses the M-core variant of the Balloon hashing algorithm.
 
     Args:
-        password (str): The main string to hash
-        salt (str): A user defined random value for security
+        password (str): The main string to hash.
+        salt (str): A user defined random value for security.
 
     Returns:
         str: The hash as hex.
