@@ -22,8 +22,7 @@ def hash_func(*args) -> bytes:
         *args: Arguments to concatenate
 
     Returns:
-        str: The hashed string
-
+        bytes: The hashed string
     """
     t = b""
 
