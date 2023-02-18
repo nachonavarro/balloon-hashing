@@ -128,9 +128,9 @@ def balloon(password: str, salt: str, space_cost: int, time_cost: int, delta: in
     return extract(buf)
 
 
-def balloon_hash(password, salt):
+def balloon_hash(password: str, salt: str) -> str:
     """A more friendly client function that just takes
-       a password and a salt and computes outputs the hash in hex.
+       a password and a salt and outputs the hash as a hex string.
 
     Args:
         password (str): The main string to hash
@@ -138,7 +138,6 @@ def balloon_hash(password, salt):
 
     Returns:
         str: The hash as hex.
-
     """
     delta = 4
     time_cost = 20
