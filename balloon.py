@@ -170,7 +170,7 @@ def balloon_m(password: str, salt: str, space_cost: int, time_cost: int, paralle
             parallel_salt = b"" + salt.encode("utf-8") + (p + 1).to_bytes(8, "little")
             futures.append(
                 executor.submit(
-                    balloon, password, parallel_salt, space_cost, time_cost, delta=delta
+                    balloon, password, parallel_salt, space_cost, time_cost, delta=delta # type: ignore
                 )
             )
         for future in concurrent.futures.as_completed(futures):
