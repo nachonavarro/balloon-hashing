@@ -145,10 +145,10 @@ def balloon_hash(password: str, salt: str) -> str:
     return balloon(password, salt, space_cost, time_cost, delta=delta).hex()
 
 
-def balloon_m(password, salt, space_cost, time_cost, parallel_cost, delta=3) -> bytes:
+def balloon_m(password: str, salt: str, space_cost: int, time_cost: int, parallel_cost: int, delta: int = 3) -> bytes:
     """M-core variant of the Balloon hashing algorithm. Note the result
        is returned as bytes, for a more friendly function with default
-       values and returning a hex string see the function balloon_m_hash
+       values that returns a hex string, see the function balloon_m_hash.
 
     Args:
         password (str): The main string to hash
@@ -156,11 +156,10 @@ def balloon_m(password, salt, space_cost, time_cost, parallel_cost, delta=3) -> 
         space_cost (int): The size of the buffer
         time_cost (int): Number of rounds to mix
         parallel_cost (int): Number of concurrent instances
-        delta (int): Number of random blocks to mix with.
+        delta (int, optional): Number of random blocks to mix with. Defaults to 3.
 
     Returns:
-        str: A series of bytes, the hash.
-
+        bytes: A series of bytes, the hash.
     """
     output = b""
 
