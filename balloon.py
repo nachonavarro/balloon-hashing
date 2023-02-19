@@ -112,7 +112,7 @@ def balloon(
        previously mentioned, first expand, then mix, and
        finally extract. Note the result is returned as bytes,
        for a more friendly function with default values
-       that returns a hex string, see the function balloon_hash.
+       that returns a hex string, see the function `balloon_hash`.
 
     Args:
         password (str): The main string to hash.
@@ -159,7 +159,7 @@ def balloon_m(
 ) -> bytes:
     """M-core variant of the Balloon hashing algorithm. Note the result
        is returned as bytes, for a more friendly function with default
-       values that returns a hex string, see the function balloon_m_hash.
+       values that returns a hex string, see the function `balloon_m_hash`.
 
     Args:
         password (str): The main string to hash.
