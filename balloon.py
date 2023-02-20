@@ -58,7 +58,7 @@ def expand(buf: list[bytes], cnt: int, space_cost: int) -> int:
 
 
 def mix(
-    buf: list[bytes], cnt: int, delta: int, salt: str, space_cost: int, time_cost: int
+    buf: list[bytes], cnt: int, delta: int, salt: bytes, space_cost: int, time_cost: int
 ) -> None:
     """Second step of the algorithm. Mix `time_cost` number
        of times the pseudorandom bytes in the buffer. At each
@@ -70,7 +70,7 @@ def mix(
         buf (list[bytes]): A list of hashes as bytes.
         cnt (int): Used in a security proof (read the paper).
         delta (int): Number of random blocks to mix with.
-        salt (str): A user defined random value for security.
+        salt (bytes): A user defined random value for security.
         space_cost (int): The size of the buffer.
         time_cost (int): Number of rounds to mix.
 
@@ -117,6 +117,25 @@ def balloon(
     Args:
         password (str): The main string to hash.
         salt (str): A user defined random value for security.
+        space_cost (int): The size of the buffer.
+        time_cost (int): Number of rounds to mix.
+        delta (int, optional): Number of random blocks to mix with. Defaults to 3.
+
+    Returns:
+        bytes: A series of bytes, the hash.
+    """
+    # Encode salt as bytes to be passed to _balloon()
+    return _balloon(password, salt.encode("utf-8"), space_cost, time_cost, delta)
+
+
+def _balloon(
+    password: str, salt: bytes, space_cost: int, time_cost: int, delta: int = 3
+) -> bytes:
+    """For internal use. Implements steps outlined in `balloon`.
+
+    Args:
+        password (str): The main string to hash.
+        salt (bytes): A user defined random value for security.
         space_cost (int): The size of the buffer.
         time_cost (int): Number of rounds to mix.
         delta (int, optional): Number of random blocks to mix with. Defaults to 3.
@@ -181,7 +200,12 @@ def balloon_m(
             parallel_salt = b"" + salt.encode("utf-8") + (p + 1).to_bytes(8, "little")
             futures.append(
                 executor.submit(
-                    balloon, password, parallel_salt, space_cost, time_cost, delta=delta  # type: ignore
+                    _balloon,
+                    password,
+                    parallel_salt,
+                    space_cost,
+                    time_cost,
+                    delta=delta,
                 )
             )
         for future in concurrent.futures.as_completed(futures):
