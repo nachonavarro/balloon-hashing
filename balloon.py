@@ -16,14 +16,13 @@ HASH_TYPE = "sha256"
 def hash_func(*args) -> bytes:
     """Concatenate all the arguments and hash the result.
        Note that the hash function used can be modified
-       in the global parameter HASH_TYPE.
+       in the global parameter `HASH_TYPE`.
 
     Args:
-        *args: Arguments to concatenate
+        *args: Arguments to concatenate.
 
     Returns:
-        str: The hashed string
-
+        bytes: The hashed string.
     """
     t = b""
 
@@ -38,21 +37,19 @@ def hash_func(*args) -> bytes:
     return hash_functions[HASH_TYPE](t).digest()
 
 
-def expand(buf, cnt, space_cost) -> int:
+def expand(buf: list[bytes], cnt: int, space_cost: int) -> int:
     """First step of the algorithm. Fill up a buffer with
        pseudorandom bytes derived from the password and salt
        by computing repeatedly the hash function on a combination
        of the password and the previous hash.
 
     Args:
-        buf (list str): A list of hashes as bytes.
-        cnt (int): Used in a security proof (read the paper)
-        space_cost (int): The size of the buffer
+        buf (list[bytes]): A list of hashes as bytes.
+        cnt (int): Used in a security proof (read the paper).
+        space_cost (int): The size of the buffer.
 
     Returns:
-        void: Updates the buffer and counter, but does not
-        return anything.
-
+        int: Counter used in a security proof (read the paper).
     """
     for s in range(1, space_cost):
         buf.append(hash_func(cnt, buf[s - 1]))
@@ -60,25 +57,26 @@ def expand(buf, cnt, space_cost) -> int:
     return cnt
 
 
-def mix(buf, cnt, delta, salt, space_cost, time_cost):
-    """Second step of the algorithm. Mix time_cost number
+def mix(
+    buf: list[bytes], cnt: int, delta: int, salt: bytes, space_cost: int, time_cost: int
+) -> None:
+    """Second step of the algorithm. Mix `time_cost` number
        of times the pseudorandom bytes in the buffer. At each
        step in the for loop, update the nth block to be
-       the hash of the n-1th block, the nth block, and delta
-       other blocks chosen at random from the buffer.
+       the hash of the n-1th block, the nth block, and `delta`
+       other blocks chosen at random from the buffer `buf`.
 
     Args:
-        buf (list str): A list of hashes as bytes.
-        cnt (int): Used in a security proof (read the paper)
+        buf (list[bytes]): A list of hashes as bytes.
+        cnt (int): Used in a security proof (read the paper).
         delta (int): Number of random blocks to mix with.
-        salt (str): A user defined random value for security
-        space_cost (int): The size of the buffer
-        time_cost (int): Number of rounds to mix
+        salt (bytes): A user defined random value for security.
+        space_cost (int): The size of the buffer.
+        time_cost (int): Number of rounds to mix.
 
     Returns:
         void: Updates the buffer and counter, but does not
         return anything.
-
     """
     for t in range(time_cost):
         for s in range(space_cost):
@@ -95,36 +93,55 @@ def mix(buf, cnt, delta, salt, space_cost, time_cost):
                 cnt += 1
 
 
-def extract(buf) -> bytes:
+def extract(buf: list[bytes]) -> bytes:
     """Final step. Return the last value in the buffer.
 
     Args:
-        buf (list str): A list of hashes as bytes.
+        buf (list[bytes]): A list of hashes as bytes.
 
     Returns:
-        str: Last value of the buffer as bytes
-
+        bytes: Last value of the buffer as bytes.
     """
     return buf[-1]
 
 
-def balloon(password, salt, space_cost, time_cost, delta=3) -> bytes:
+def balloon(
+    password: str, salt: str, space_cost: int, time_cost: int, delta: int = 3
+) -> bytes:
     """Main function that collects all the substeps. As
        previously mentioned, first expand, then mix, and
        finally extract. Note the result is returned as bytes,
        for a more friendly function with default values
-       and returning a hex string see the function balloon_hash
+       that returns a hex string, see the function `balloon_hash`.
 
     Args:
-        password (str): The main string to hash
-        salt (str): A user defined random value for security
-        space_cost (int): The size of the buffer
-        time_cost (int): Number of rounds to mix
-        delta (int): Number of random blocks to mix with.
+        password (str): The main string to hash.
+        salt (str): A user defined random value for security.
+        space_cost (int): The size of the buffer.
+        time_cost (int): Number of rounds to mix.
+        delta (int, optional): Number of random blocks to mix with. Defaults to 3.
 
     Returns:
-        str: A series of bytes, the hash.
+        bytes: A series of bytes, the hash.
+    """
+    # Encode salt as bytes to be passed to _balloon()
+    return _balloon(password, salt.encode("utf-8"), space_cost, time_cost, delta)
 
+
+def _balloon(
+    password: str, salt: bytes, space_cost: int, time_cost: int, delta: int = 3
+) -> bytes:
+    """For internal use. Implements steps outlined in `balloon`.
+
+    Args:
+        password (str): The main string to hash.
+        salt (bytes): A user defined random value for security.
+        space_cost (int): The size of the buffer.
+        time_cost (int): Number of rounds to mix.
+        delta (int, optional): Number of random blocks to mix with. Defaults to 3.
+
+    Returns:
+        bytes: A series of bytes, the hash.
     """
     buf = [hash_func(0, password, salt)]
     cnt = 1
@@ -134,17 +151,16 @@ def balloon(password, salt, space_cost, time_cost, delta=3) -> bytes:
     return extract(buf)
 
 
-def balloon_hash(password, salt):
+def balloon_hash(password: str, salt: str) -> str:
     """A more friendly client function that just takes
-       a password and a salt and computes outputs the hash in hex.
+       a password and a salt and outputs the hash as a hex string.
 
     Args:
-        password (str): The main string to hash
-        salt (str): A user defined random value for security
+        password (str): The main string to hash.
+        salt (str): A user defined random value for security.
 
     Returns:
         str: The hash as hex.
-
     """
     delta = 4
     time_cost = 20
@@ -152,22 +168,28 @@ def balloon_hash(password, salt):
     return balloon(password, salt, space_cost, time_cost, delta=delta).hex()
 
 
-def balloon_m(password, salt, space_cost, time_cost, parallel_cost, delta=3) -> bytes:
+def balloon_m(
+    password: str,
+    salt: str,
+    space_cost: int,
+    time_cost: int,
+    parallel_cost: int,
+    delta: int = 3,
+) -> bytes:
     """M-core variant of the Balloon hashing algorithm. Note the result
        is returned as bytes, for a more friendly function with default
-       values and returning a hex string see the function balloon_m_hash
+       values that returns a hex string, see the function `balloon_m_hash`.
 
     Args:
-        password (str): The main string to hash
-        salt (str): A user defined random value for security
-        space_cost (int): The size of the buffer
-        time_cost (int): Number of rounds to mix
-        parallel_cost (int): Number of concurrent instances
-        delta (int): Number of random blocks to mix with.
+        password (str): The main string to hash.
+        salt (str): A user defined random value for security.
+        space_cost (int): The size of the buffer.
+        time_cost (int): Number of rounds to mix.
+        parallel_cost (int): Number of concurrent instances.
+        delta (int, optional): Number of random blocks to mix with. Defaults to 3.
 
     Returns:
-        str: A series of bytes, the hash.
-
+        bytes: A series of bytes, the hash.
     """
     output = b""
 
@@ -178,7 +200,12 @@ def balloon_m(password, salt, space_cost, time_cost, parallel_cost, delta=3) -> 
             parallel_salt = b"" + salt.encode("utf-8") + (p + 1).to_bytes(8, "little")
             futures.append(
                 executor.submit(
-                    balloon, password, parallel_salt, space_cost, time_cost, delta=delta
+                    _balloon,
+                    password,
+                    parallel_salt,
+                    space_cost,
+                    time_cost,
+                    delta=delta,
                 )
             )
         for future in concurrent.futures.as_completed(futures):
@@ -192,18 +219,17 @@ def balloon_m(password, salt, space_cost, time_cost, parallel_cost, delta=3) -> 
     return hash_func(password, salt, output)
 
 
-def balloon_m_hash(password, salt):
+def balloon_m_hash(password: str, salt: str) -> str:
     """A more friendly client function that just takes
-       a password and a salt and computes outputs the hash in hex.
+       a password and a salt and outputs the hash as a hex string.
        This uses the M-core variant of the Balloon hashing algorithm.
 
     Args:
-        password (str): The main string to hash
-        salt (str): A user defined random value for security
+        password (str): The main string to hash.
+        salt (str): A user defined random value for security.
 
     Returns:
         str: The hash as hex.
-
     """
     delta = 4
     time_cost = 20
