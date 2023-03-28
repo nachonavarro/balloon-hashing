@@ -1,5 +1,6 @@
-from balloon import balloon, balloon_hash, balloon_m, balloon_m_hash
 import unittest
+
+from balloon import balloon, balloon_hash, balloon_m, balloon_m_hash, verify, verify_m
 
 
 class TestBalloon(unittest.TestCase):
@@ -43,18 +44,17 @@ class TestBalloon(unittest.TestCase):
         ]
 
         for test_vector in test_vectors:
-            self.assertEqual(
-                balloon(
-                    test_vector["password"],
-                    test_vector["salt"],
-                    test_vector["s_cost"],
-                    test_vector["t_cost"],
-                ).hex(),
-                test_vector["output"],
-            )
+            test_params = list(test_vector.values())
+            self.assertEqual(balloon(*test_params[:4]).hex(), test_vector["output"])
             self.assertEqual(
                 balloon_hash(test_vector["password"], test_vector["salt"]),
                 balloon(test_vector["password"], test_vector["salt"], 16, 20, 4).hex(),
+            )
+            self.assertTrue(verify(*test_params[:4], 3, test_vector["output"]))
+            self.assertFalse(
+                verify(
+                    *test_params[:4], 3, "%064x" % (int(test_vector["output"], 16) - 1)
+                )
             )
 
 
@@ -128,21 +128,19 @@ class TestBalloonM(unittest.TestCase):
         ]
 
         for test_vector in test_vectors:
-            self.assertEqual(
-                balloon_m(
-                    test_vector["password"],
-                    test_vector["salt"],
-                    test_vector["s_cost"],
-                    test_vector["t_cost"],
-                    test_vector["p_cost"],
-                ).hex(),
-                test_vector["output"],
-            )
+            test_params = list(test_vector.values())
+            self.assertEqual(balloon_m(*test_params[:5]).hex(), test_vector["output"])
             self.assertEqual(
                 balloon_m_hash(test_vector["password"], test_vector["salt"]),
                 balloon_m(
                     test_vector["password"], test_vector["salt"], 16, 20, 4, 4
                 ).hex(),
+            )
+            self.assertTrue(verify_m(*test_params[:5], 3, test_vector["output"]))
+            self.assertFalse(
+                verify_m(
+                    *test_params[:5], 3, "%064x" % (int(test_vector["output"], 16) - 1)
+                )
             )
 
 
