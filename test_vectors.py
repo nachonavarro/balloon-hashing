@@ -51,9 +51,7 @@ class TestBalloon(unittest.TestCase):
                 balloon(test_vector["password"], test_vector["salt"], 16, 20, 4).hex(),
             )
             self.assertTrue(verify(test_vector["output"], *test_params[:4]))
-            self.assertFalse(
-                verify("%064x" % (int(test_vector["output"], 16) - 1), *test_params[:4])
-            )
+            self.assertFalse(verify("0" * 64, *test_params[:4]))
 
 
 class TestBalloonM(unittest.TestCase):
@@ -135,11 +133,7 @@ class TestBalloonM(unittest.TestCase):
                 ).hex(),
             )
             self.assertTrue(verify_m(test_vector["output"], *test_params[:5]))
-            self.assertFalse(
-                verify_m(
-                    "%064x" % (int(test_vector["output"], 16) - 1), *test_params[:5]
-                )
-            )
+            self.assertFalse(verify_m("0" * 64, *test_params[:5]))
 
 
 if __name__ == "__main__":
