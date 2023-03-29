@@ -244,7 +244,7 @@ def balloon_m_hash(password: str, salt: str) -> str:
 def verify(
     hash: str, password: str, salt: str, space_cost: int, time_cost: int, delta: int = 3
 ) -> bool:
-    """Verify that password matches hash when hashed with salt, space_cost,
+    """Verify that hash matches password when hashed with salt, space_cost,
        time_cost, and delta.
 
     Args:
@@ -272,7 +272,7 @@ def verify_m(
     parallel_cost: int,
     delta: int = 3,
 ) -> bool:
-    """Verify that password matches hash when hashed with salt, space_cost,
+    """Verify that hash matches password when hashed with salt, space_cost,
        time_cost, parallel_cost, and delta.
        This uses the M-core variant of the Balloon hashing algorithm.
 
