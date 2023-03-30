@@ -1,5 +1,6 @@
 import concurrent.futures
 import hashlib
+import secrets
 
 hash_functions = {
     "md5": hashlib.md5,
@@ -238,3 +239,56 @@ def balloon_m_hash(password: str, salt: str) -> str:
     return balloon_m(
         password, salt, space_cost, time_cost, parallel_cost, delta=delta
     ).hex()
+
+
+def verify(
+    hash: str, password: str, salt: str, space_cost: int, time_cost: int, delta: int = 3
+) -> bool:
+    """Verify that hash matches password when hashed with salt, space_cost,
+       time_cost, and delta.
+
+    Args:
+        hash (str): The hash to check against.
+        password (str): The password to verify.
+        salt (str): A user defined random value for security.
+        space_cost (int): The size of the buffer.
+        time_cost (int): Number of rounds to mix.
+        delta (int): Number of random blocks to mix with. Defaults to 3.
+
+    Returns:
+        bool: True if password matches hash, otherwise False.
+    """
+    return secrets.compare_digest(
+        balloon(password, salt, space_cost, time_cost, delta).hex(), hash
+    )
+
+
+def verify_m(
+    hash: str,
+    password: str,
+    salt: str,
+    space_cost: int,
+    time_cost: int,
+    parallel_cost: int,
+    delta: int = 3,
+) -> bool:
+    """Verify that hash matches password when hashed with salt, space_cost,
+       time_cost, parallel_cost, and delta.
+       This uses the M-core variant of the Balloon hashing algorithm.
+
+    Args:
+        hash (str): The hash to check against.
+        password (str): The password to verify.
+        salt (str): A user defined random value for security.
+        space_cost (int): The size of the buffer.
+        time_cost (int): Number of rounds to mix.
+        parallel_cost (int): Number of concurrent instances.
+        delta (int): Number of random blocks to mix with. Defaults to 3.
+
+    Returns:
+        bool: True if password matches hash, otherwise False.
+    """
+    return secrets.compare_digest(
+        balloon_m(password, salt, space_cost, time_cost, parallel_cost, delta).hex(),
+        hash,
+    )
