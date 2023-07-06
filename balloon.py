@@ -86,7 +86,7 @@ def mix(
             for i in range(delta):
                 idx_block = hash_func(t, s, i)
                 other = (
-                    int.from_bytes(hash_func(cnt, salt, idx_block), "little")
+                    int.from_bytes(hash_func(cnt, salt, idx_block)[0:8], "little")
                     % space_cost
                 )
                 cnt += 1
