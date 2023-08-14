@@ -1,9 +1,32 @@
 import unittest
 
-from balloon import balloon, balloon_hash, balloon_m, balloon_m_hash, verify, verify_m
+from balloon import (
+    _balloon,
+    balloon,
+    balloon_hash,
+    balloon_m,
+    balloon_m_hash,
+    verify,
+    verify_m,
+)
 
 
 class TestBalloon(unittest.TestCase):
+    def test_invalid_params(self):
+        test_vectors = [
+            {"args": ("", "", -1, 0, 0), "param": "space_cost"},
+            {"args": ("", "", 0, -1, 0), "param": "time_cost"},
+            {"args": ("", "", 0, 0, -1), "param": "delta"},
+        ]
+
+        for test_vector in test_vectors:
+            with self.assertRaises(ValueError) as context:
+                _balloon(*test_vector["args"])
+            self.assertEqual(
+                str(context.exception),
+                "'%s' must be a non-negative integer." % test_vector["param"],
+            )
+
     def test_vectors(self):
         test_vectors = [
             {
@@ -55,6 +78,13 @@ class TestBalloon(unittest.TestCase):
 
 
 class TestBalloonM(unittest.TestCase):
+    def test_invalid_params(self):
+        with self.assertRaises(ValueError) as context:
+            balloon_m("", "", 0, 0, -1, 0)
+        self.assertEqual(
+            str(context.exception), "'parallel_cost' must be a positive integer."
+        )
+
     def test_vectors(self):
         test_vectors = [
             {
