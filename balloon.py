@@ -192,8 +192,6 @@ def balloon_m(
     Returns:
         bytes: A series of bytes, the hash.
     """
-    output = b""
-
     with concurrent.futures.ThreadPoolExecutor() as executor:
         futures = []
 
@@ -209,13 +207,10 @@ def balloon_m(
                     delta=delta,
                 )
             )
-        for future in concurrent.futures.as_completed(futures):
-            result = future.result()
-
-            if len(output) == 0:
-                output = result
-            else:
-                output = bytes([_a ^ _b for _a, _b in zip(output, result)])
+        completed_futures = concurrent.futures.as_completed(futures)
+        output = next(completed_futures).result()
+        for future in completed_futures:
+            output = bytes([_a ^ _b for _a, _b in zip(output, future.result())])
 
     return hash_func(password, salt, output)
 
