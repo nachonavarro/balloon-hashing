@@ -21,6 +21,8 @@ class TestBalloon(unittest.TestCase):
 
         for test_vector in test_vectors:
             with self.assertRaises(ValueError) as context:
+                # Test internal function _balloon() as it
+                # is used by both balloon() and balloon_m()
                 _balloon(*test_vector["args"])
             self.assertEqual(
                 str(context.exception),
