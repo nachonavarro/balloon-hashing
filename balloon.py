@@ -144,6 +144,12 @@ def _balloon(
     Returns:
         bytes: A series of bytes, the hash.
     """
+    if not isinstance(space_cost, int) or space_cost < 1:
+        raise ValueError("'space_cost' must be a positive integer.")
+    if not isinstance(time_cost, int) or time_cost < 1:
+        raise ValueError("'time_cost' must be a positive integer.")
+    if not isinstance(delta, int) or delta < 1:
+        raise ValueError("'delta' must be a positive integer.")
     buf = [hash_func(0, password, salt)]
     cnt = 1
 
@@ -192,6 +198,10 @@ def balloon_m(
     Returns:
         bytes: A series of bytes, the hash.
     """
+    if not isinstance(parallel_cost, int) or parallel_cost < 1:
+        raise ValueError("'parallel_cost' must be a positive integer.")
+    output = b""
+
     with concurrent.futures.ThreadPoolExecutor() as executor:
         futures = []
 
